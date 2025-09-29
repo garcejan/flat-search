@@ -1,6 +1,6 @@
 
 <p align="center">
-   <img src="https://www.sreality.cz/img/logo.png" alt="Sreality.cz" width="180"/>
+   <img src="https://d11-a.sdn.cz/d_11/c_img_G_J/ynXEtZ.jpeg" alt="Sreality.cz" width="180"/>
 </p>
 
 # 🏢 Flat Search Automation
