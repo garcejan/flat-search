@@ -1,0 +1,7 @@
+# For .env variable loading
+python-dotenv
+bs4
+openpyxl
+pandas
+requests
+tqdm
