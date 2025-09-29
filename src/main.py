@@ -9,10 +9,20 @@ import tqdm
 import os
 from dotenv import load_dotenv
 
+import subprocess
+
+
 # Load environment variables from .env file
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 MAIN_URL = os.getenv("MAIN_URL")
 EXCEL_PATH = os.getenv("EXCEL_PATH")
+
+
+# Notification function (macOS)
+def notify(title: str, message: str):
+    subprocess.run(
+        ["osascript", "-e", f'display notification "{message}" with title "{title}"']
+    )
 
 
 ########################
@@ -344,6 +354,15 @@ def main():
         df_final,
         excel_path=EXCEL_PATH,
     )
+
+    print("Generating pop-up notification.")
+    new_offer = any(df_today["Novinka"] == "NOVINKA!")
+    if new_offer:
+        notify(
+            "Flat search automation", "Nové inzeráty na sreality.cz k dispozici! 🏡🚀"
+        )
+    else:
+        notify("Flat search automation", "Od včerejška žádný nový inzerát... 🏡🥺")
 
 
 if __name__ == "__main__":
