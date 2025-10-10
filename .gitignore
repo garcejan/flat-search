@@ -9,6 +9,11 @@ wheels/
 # Virtual environments
 .venv
 
+# Files
+.env
+.DS_Store
 
+
+# Folders
 logs/
 reports/
