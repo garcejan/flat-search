@@ -2,113 +2,96 @@
 <p align="center">
    <img src="https://d11-a.sdn.cz/d_11/c_img_G_J/ynXEtZ.jpeg" alt="Sreality.cz" width="180"/>
 </p>
+# Flat Search
 
-# 🏢 Flat Search Automation
+This repository collects and processes apartment listings (Prague) and exports results to Excel and other artifacts. It contains both a scripted workflow (`src/main.py`) and a Jupyter notebook for exploration and iterative runs.
 
-Automate the search, analysis, and review of Prague flat listings from [sreality.cz](https://www.sreality.cz) with beautiful Excel exports and smart filtering.
+## What this project contains
 
----
+Top-level layout (important files and folders):
 
-## ✨ Features
+- `pyproject.toml` — project metadata / build config (if using tools that read it)
+- `requirements.txt` — pinned Python dependencies used by the scripts/notebook
+- `notebooks/flat-search-notebook.ipynb` — exploratory notebook with the step-by-step workflow
+- `scripts/run_script.sh` — convenience shell wrapper to run the main script
+- `src/` — Python source files
+  - `main.py` — orchestrates scraping, processing, and export
+  - `sreality_scraper.py` — scraper logic for sreality.cz
+  - `bezrealitky_scraper.py` — scraper logic for bezrealitky (if used)
+  - `scraper_utils.py` — shared scraping helpers (requests, parsing helpers)
+  - `excel_utils.py` — functions to write and format Excel reports
+  - `notify_utils.py` — optional notifications (email, desktop, etc.)
+- `reports/` — output files (e.g. Excel results)
+- `logs/` — runtime logs
 
-<ul>
-   <li><b>Web Scraping</b>: Collects flat listings from selected Prague districts with customizable filters.</li>
-   <li><b>Data Processing</b>: Extracts and cleans key information (size, location, price, energy rating, etc.).</li>
-   <li><b>Excel Export</b>:
-      <ul>
-         <li>Outputs results to a well-formatted Excel file.</li>
-         <li>Adds a <code>Zájem</code> column with dropdown options (<code>ANO</code>, <code>NE</code>) for user interest.</li>
-         <li>Conditional formatting: <span style="color:green;">green</span> for <code>ANO</code>, <span style="color:red;">red</span> for <code>NE</code>.</li>
-         <li>Clickable hyperlinks in the <code>URL</code> column.</li>
-         <li>Two sheets:
-            <ul>
-               <li><b>Hlavní</b>: Flats where <code>Zájem</code> is not <code>NE</code>.</li>
-               <li><b>Vyřazené</b>: Flats where <code>Zájem</code> is <code>NE</code>.</li>
-            </ul>
-         </li>
-      </ul>
-   </li>
-   <li><b>.env Support</b>: Easily configure main search URL and output path via a <code>.env</code> file.</li>
-</ul>
+## Quickstart
 
----
-
-## 🚀 Quickstart
-
-### 1. Clone & Install
+1. Create and activate a virtual environment (recommended):
 
 ```bash
-git clone https://github.com/garcejan/flat-search.git
-cd flat-search
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+2. Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
-### 2. Configure
+3. Configure (optional):
 
-Edit the <code>.env</code> file to set your search URL and output path:
+- Create a `.env` file at the repository root to override runtime settings (example keys used by the project):
 
 ```env
-MAIN_URL=https://www.sreality.cz/hledani/prodej/byty/praha-2,praha-3,praha-4?...(your filters)...
-EXCEL_PATH=/absolute/path/to/flat_search_results.xlsx
+MAIN_URL=https://www.sreality.cz/hledani/your-search-url
+EXCEL_PATH=reports/flat_search_results.xlsx
+LOG_LEVEL=INFO
 ```
 
-### 3. Run
-
-<details>
-<summary>Notebook</summary>
-
-Open <code>notebooks/flat-search-notebook.ipynb</code> in Jupyter and run step by step.
-
-</details>
-
-<details>
-<summary>Script</summary>
+4. Run the scripted workflow:
 
 ```bash
+# run directly with Python
 python src/main.py
+
+# or use the helper script
+./scripts/run_script.sh
 ```
 
-</details>
+5. Or open the notebook at `notebooks/flat-search-notebook.ipynb` and run cells interactively.
 
-### 4. Review Results
+## Outputs
 
-- The main output is in <code>reports/flat_search_results.xlsx</code> (or as set in <code>.env</code>).
-- Open in Excel to review, filter, and mark flats of interest.
+- Excel report(s) are written to `reports/` by default (file name may be configured via `.env` or script args).
+- Logs are written to the `logs/` directory.
 
----
+## Short module guide
 
-## 📁 File Structure
+- `src/main.py` — entry point; wires scrapers, processors and exporters together. It can be run unattended.
+- `src/sreality_scraper.py` — contains the site-specific scraping/parsing logic for sreality.cz listings.
+- `src/bezrealitky_scraper.py` — alternative source scraper implementation.
+- `src/scraper_utils.py` — common utilities for HTTP requests, retries, rate-limiting, and HTML parsing helpers.
+- `src/excel_utils.py` — builds formatted Excel files, adds columns such as interest/filters, and creates separate sheets.
+- `src/notify_utils.py` — helper for sending notifications (optional/experimental).
 
-<pre>
-notebooks/flat-search-notebook.ipynb   # Main Jupyter notebook for scraping and processing
-src/main.py                            # Main script version of the workflow
-flat_search_to_excel.py                # (Optional) Standalone script
-reports/flat_search_results.xlsx       # Main Excel output with two sheets
-.env                                   # Configuration for URL and output path
-requirements.txt                       # Python dependencies
-README.md                              # This file
-</pre>
+If you change public behavior in any of these modules, consider adding a small test or a notebook cell demonstrating the change.
 
----
+## Development notes & etiquette
 
-## ⚙️ Customization
+- Run responsibly: respect robots.txt and the target website's terms of service. Add delays and rate limits when scraping.
+- Keep secrets (API keys, credentials) out of the repo. Put them in environment variables or an ignored `.env` file.
 
-- Adjust search filters in the <code>.env</code> file or directly in the notebook/script.
-- The Excel output can be further customized for additional columns or formatting.
-
----
-
-## 📝 Notes
-
-- The script is designed for personal, non-commercial use.
-- Be respectful of the target website’s terms of service and avoid excessive scraping.
-
----
-
-## 📜 License
+## License
 
 MIT License
 
 ---
 
-<p align="center"><i>Created by Jan Garcek, 2025.09</i></p>
+If you'd like, I can also:
+
+- add a sample `.env.example` in the repo,
+- add a short `Makefile` or `tox`/`nox` tasks for common workflows,
+- or create a small test that verifies the main export function writes a valid Excel file.
+
+Created by Jan Garcek
